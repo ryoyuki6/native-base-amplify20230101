@@ -1,0 +1,5 @@
+{
+  "AppSyncApiName": "nativebase20230101",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false
+}
