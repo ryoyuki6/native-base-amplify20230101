@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { NativeBaseProvider, Text, Box } from "native-base";
+import { NativeBaseProvider, Text, Box, VStack, Stack } from "native-base";
 
 import { Button } from "react-native";
 
@@ -7,6 +7,9 @@ import { API, Amplify } from "aws-amplify";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 
 import { listPeople } from './src/graphql/queries';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import awsExports from "./src/aws-exports";
 Amplify.configure(awsExports);
@@ -16,7 +19,7 @@ function SignOutButton() {
   return <Button title="Sign Out" onPress={signOut} />;
 }
 
-function TopPage() {
+function HomePage() {
   const [data1,setData1] = useState([]);
 
   useEffect(() => {
@@ -31,23 +34,32 @@ function TopPage() {
   console.log(data1);
 
   return (
-    <Box flex={1} bg="#fff" alignItems="center" justifyContent="center">
-      <Text>Hello Native Base !!!</Text>
-      <SignOutButton />
-    </Box>
+    <NativeBaseProvider>
+      {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
+      <Box bg="primary.500" py="4" px="3" borderRadius="5" rounded="md" alignSelf="center" justifyContent="center">
+        <VStack space="2" alignSelf="center">
+          <Text fontSize="sm" color="white">Hello Native Base !!!</Text>
+          <SignOutButton />
+        </VStack>
+      </Box>
+    </NativeBaseProvider>
   );
 }
 
+const Stack2 = createStackNavigator();
 
 function App() {
   return (
     <Authenticator.Provider>
       <Authenticator>
-        <NativeBaseProvider>
-          <TopPage />
-        </NativeBaseProvider>
+        <NavigationContainer>
+          <Stack2.Navigator>
+            <Stack2.Screen name="Home" component={HomePage} />
+        </Stack2.Navigator>
+        </NavigationContainer>
       </Authenticator>
     </Authenticator.Provider>
   );
 }
+
 export default App;
