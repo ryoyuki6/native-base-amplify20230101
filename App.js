@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { NativeBaseProvider, Text, Box, VStack, Stack } from "native-base";
 
 import { Button } from "react-native";
@@ -6,10 +6,11 @@ import { Button } from "react-native";
 import { API, Amplify } from "aws-amplify";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 
-import { listPeople } from './src/graphql/queries';
+import { listPeople } from "./src/graphql/queries";
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 
 import awsExports from "./src/aws-exports";
 Amplify.configure(awsExports);
@@ -19,15 +20,42 @@ function SignOutButton() {
   return <Button title="Sign Out" onPress={signOut} />;
 }
 
-function HomePage() {
-  const [data1,setData1] = useState([]);
+function HomeScreen() {
+  const navigation = useNavigation();
+
+  return (
+    <NativeBaseProvider>
+      {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
+      <Box
+        bg="primary.500"
+        py="4"
+        px="3"
+        borderRadius="5"
+        rounded="md"
+        alignSelf="center"
+        justifyContent="center"
+      >
+        <VStack space="2" alignSelf="center">
+          <Text fontSize="sm" color="white">
+            Hello Native Base !!!
+          </Text>
+          <Button title="Profileへ" onPress={ () => navigation.navigate('Profile')} />
+          <SignOutButton />
+        </VStack>
+      </Box>
+    </NativeBaseProvider>
+  );
+}
+
+function ProfileScreen() {
+  const [data1, setData1] = useState([]);
 
   useEffect(() => {
     fetchData1();
   }, []);
 
   async function fetchData1() {
-    const apiData = await API.graphql({ query: listPeople});
+    const apiData = await API.graphql({ query: listPeople });
     setData1(apiData.data.listPeople.items);
   }
 
@@ -36,10 +64,19 @@ function HomePage() {
   return (
     <NativeBaseProvider>
       {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
-      <Box bg="primary.500" py="4" px="3" borderRadius="5" rounded="md" alignSelf="center" justifyContent="center">
+      <Box
+        bg="primary.500"
+        py="4"
+        px="3"
+        borderRadius="5"
+        rounded="md"
+        alignSelf="center"
+        justifyContent="center"
+      >
         <VStack space="2" alignSelf="center">
-          <Text fontSize="sm" color="white">Hello Native Base !!!</Text>
-          <SignOutButton />
+          <Text fontSize="sm" color="white">
+            Profile !!!
+          </Text>
         </VStack>
       </Box>
     </NativeBaseProvider>
@@ -53,9 +90,10 @@ function App() {
     <Authenticator.Provider>
       <Authenticator>
         <NavigationContainer>
-          <Stack2.Navigator>
-            <Stack2.Screen name="Home" component={HomePage} />
-        </Stack2.Navigator>
+          <Stack2.Navigator initialRouteName="Home">
+            <Stack2.Screen name="Home" component={HomeScreen} />
+            <Stack2.Screen name="Profile" component={ProfileScreen} />
+          </Stack2.Navigator>
         </NavigationContainer>
       </Authenticator>
     </Authenticator.Provider>
