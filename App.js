@@ -39,7 +39,10 @@ function HomeScreen() {
           <Text fontSize="sm" color="white">
             Hello Native Base !!!
           </Text>
-          <Button title="Profileへ" onPress={ () => navigation.navigate('Profile')} />
+          <Button
+            title="Profileへ"
+            onPress={() => navigation.navigate("Profile")}
+          />
           <SignOutButton />
         </VStack>
       </Box>
@@ -59,11 +62,33 @@ function ProfileScreen() {
     setData1(apiData.data.listPeople.items);
   }
 
-  console.log(data1);
+  const data0 = data1[0];
+  console.log(data0);
+
+  function DisplayData0() {
+    if (typeof data0 !== "undefined") {
+      console.log(data0["name"]);
+      return (
+        <>
+          <Text fontSize="sm" color="white">
+            Name : {data1[0].name}
+          </Text>
+          <Text fontSize="sm" color="white">
+            Age : {data1[0].age}
+          </Text>
+          <Text fontSize="sm" color="white">
+            Email : {data1[0].email}
+          </Text>
+          <Text fontSize="sm" color="white">
+            Tel : {data1[0].tel}
+          </Text>
+        </>
+      );
+    }
+  }
 
   return (
     <NativeBaseProvider>
-      {/* <Box flex={1} bg="#fff" alignItems="center" justifyContent="center"> */}
       <Box
         bg="primary.500"
         py="4"
@@ -75,8 +100,9 @@ function ProfileScreen() {
       >
         <VStack space="2" alignSelf="center">
           <Text fontSize="sm" color="white">
-            Profile !!!
+            Profile
           </Text>
+          <DisplayData0 />
         </VStack>
       </Box>
     </NativeBaseProvider>
