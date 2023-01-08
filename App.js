@@ -3,7 +3,7 @@ import { NativeBaseProvider, Text, Box, VStack, Stack } from "native-base";
 
 import { Button } from "react-native";
 
-import { API, Amplify } from "aws-amplify";
+import { API, Amplify, graphqlOperation } from "aws-amplify";
 import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react-native";
 
 import { listPeople } from "./src/graphql/queries";
@@ -22,6 +22,7 @@ function SignOutButton() {
 
 function HomeScreen() {
   const navigation = useNavigation();
+  const { user, signOut } = useAuthenticator((context) => [context.user])
 
   return (
     <NativeBaseProvider>
@@ -37,7 +38,7 @@ function HomeScreen() {
       >
         <VStack space="2" alignSelf="center">
           <Text fontSize="sm" color="white">
-            Hello Native Base !!!
+            {`Welcome, ${user.username} !!!`}
           </Text>
           <Button
             title="Profileへ"
@@ -52,22 +53,25 @@ function HomeScreen() {
 
 function ProfileScreen() {
   const [data1, setData1] = useState([]);
+  const { user, signOut } = useAuthenticator((context) => [context.user])
 
   useEffect(() => {
     fetchData1();
   }, []);
 
   async function fetchData1() {
-    const apiData = await API.graphql({ query: listPeople });
-    setData1(apiData.data.listPeople.items);
+    const opt = {
+      filter: {name: {eq: user.username}},
+    };
+    API.graphql(graphqlOperation(listPeople,opt)).then(values=> {
+      setData1(values.data.listPeople.items);
+    });
   }
 
-  const data0 = data1[0];
-  console.log(data0);
+  console.log(data1);
 
   function DisplayData0() {
-    if (typeof data0 !== "undefined") {
-      console.log(data0["name"]);
+    if (typeof data1[0] !== "undefined") {
       return (
         <>
           <Text fontSize="sm" color="white">
